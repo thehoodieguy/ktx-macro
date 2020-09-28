@@ -1,14 +1,15 @@
+const getWebhookUrl = () => localStorage.getItem("KTX_MACRO::slackWebHookUrl");
+const fetchJson = (url, option, data) =>
+    fetch(url, {
+        body: JSON.stringify(data),
+        ...option,
+    });
+const setWebhookUrl = (value) =>
+    localStorage.setItem("KTX_MACRO::slackWebHookUrl", value);
+
 let uid = 1;
 const MAIN_URI = "http://www.letskorail.com/ebizprd/EbizPrdTicketPr21111_i1.do";
 const LOGIN_PAGE_URI = "http://www.letskorail.com/korail/com/login.do";
-const setWebhookUrl = (value) =>
-  localStorage.setItem("KTX_MACRO::slackWebHookUrl", value);
-const getWebhookUrl = () => localStorage.getItem("KTX_MACRO::slackWebHookUrl");
-const fetchJson = (url, option, data) =>
-  fetch(url, {
-    body: JSON.stringify(data),
-    ...option,
-  });
 
 const createCheckbox = () => {
   const $rows = document.querySelectorAll("#tableResult > tbody > tr");
@@ -74,22 +75,6 @@ const setEscapeEvent = () => {
 };
 
 const macroStart = () => {
-  if (confirm("슬랙 웹훅을 설정하시겠어요?")) {
-    const value = prompt("사용할 웹훅 URL을 입력해주세요.");
-    if (value) {
-      setWebhookUrl(value);
-      fetchJson(
-        value,
-        { method: "post" },
-        {
-          text:
-            "코레일 예매를 시작합니다. \n" +
-            "준비가 완료되면 이 채널로 알려드릴게요 :+1:",
-        }
-      );
-    }
-  }
-
   if (!isLogin()) {
     if (confirm("로그인이 필요합니다.\n로그인 페이지로 이동하시겠습니까?")) {
       location.href = LOGIN_PAGE_URI;

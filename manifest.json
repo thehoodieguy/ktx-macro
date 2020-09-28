@@ -3,7 +3,7 @@
   "name": "KTX Macro",
   "description": "KTX 자동 예약 매크로",
   "version": "1.2.0",
-  "permissions": ["http://www.letskorail.com/"],
+  "permissions": ["http://www.letskorail.com/", "storage"],
   "icons": {
     "96": "icon96.png"
   },
@@ -17,11 +17,12 @@
     }
   ],
   "background": {
-    "page": "background.html"
+    "scripts": ["background.js"],
+    "persistent": false
   },
   "web_accessible_resources": ["inject.js", "assets/tada.mp3"],
   "browser_action": {
-    "default_title": "telegram",
+    "default_title": "popup",
     "default_popup": "popup.html"
   }
 }

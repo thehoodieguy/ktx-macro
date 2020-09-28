@@ -1,4 +1,9 @@
 const getWebhookUrl = () => localStorage.getItem("KTX_MACRO::slackWebHookUrl");
+const fetchJson = (url, option, data) =>
+  fetch(url, {
+    body: JSON.stringify(data),
+    ...option,
+  });
 
 const playSound = () => {
   if (typeof audio != "undefined" && audio) {
@@ -30,14 +35,17 @@ const sendTelegramMessage = () => {
 const sendWebhookMessage = () => {
   const webhookUrl = getWebhookUrl();
   if (webhookUrl) {
-    fetch(webhookUrl, {
-      method: "post",
-      body: {
+    fetchJson(
+      webhookUrl,
+      {
+        method: "post",
+      },
+      {
         text:
           "예약이 완료되었습니다. 지금 결제해주세요! :fast_forward: \n" +
           "http://www.letskorail.com/",
-      },
-    });
+      }
+    );
   }
 };
 

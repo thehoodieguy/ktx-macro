@@ -1,6 +1,14 @@
 let uid = 1;
 const MAIN_URI = "http://www.letskorail.com/ebizprd/EbizPrdTicketPr21111_i1.do";
 const LOGIN_PAGE_URI = "http://www.letskorail.com/korail/com/login.do";
+const setWebhookUrl = (value) =>
+  localStorage.setItem("KTX_MACRO::slackWebHookUrl", value);
+const getWebhookUrl = () => localStorage.getItem("KTX_MACRO::slackWebHookUrl");
+const fetchJson = (url, option, data) =>
+  fetch(url, {
+    body: JSON.stringify(data),
+    ...option,
+  });
 
 const createCheckbox = () => {
   const $rows = document.querySelectorAll("#tableResult > tbody > tr");
@@ -9,7 +17,7 @@ const createCheckbox = () => {
     return;
   }
 
-  $rows.forEach($row => {
+  $rows.forEach(($row) => {
     $row
       .querySelector("td:nth-child(5)")
       .insertAdjacentHTML("beforeend", getCheckboxTemplate(uid++));
@@ -19,7 +27,7 @@ const createCheckbox = () => {
   });
 };
 
-const isChecked = uid => {
+const isChecked = (uid) => {
   const checkedItemsStr = localStorage.getItem("checkedItems");
   const checkedItems = checkedItemsStr ? checkedItemsStr.split(",") : [];
 
@@ -32,16 +40,16 @@ const isChecked = uid => {
 
 const isLogin = () => !!document.querySelectorAll(".gnb_list > .log_nm").length;
 
-const getCheckboxTemplate = uid => {
+const getCheckboxTemplate = (uid) => {
   if (!uid) {
     return;
   }
 
   return `
     <label>
-      <input type="checkbox" class="ktx-macro-checkbox" value="${uid}" ${isChecked(
-    uid
-  ) && "checked"}>
+      <input type="checkbox" class="ktx-macro-checkbox" value="${uid}" ${
+    isChecked(uid) && "checked"
+  }>
     매크로
   </label>
   `;
@@ -58,20 +66,28 @@ const setCheckboxEvent = () => {
 };
 
 const setEscapeEvent = () => {
-  window.addEventListener("keydown", e => {
+  window.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       macroStop();
     }
   });
 };
 
-const setWebhookUrl = (value) => localStorage.setItem('KTX_MACRO::slackWebHookUrl', value);
-
-
 const macroStart = () => {
-  if (confirm('슬랙 웹훅을 설정하시겠어요?')) {
-    const value = prompt('사용할 웹훅 URL을 입력해주세요.');
-    if (value) setWebhookUrl(value);
+  if (confirm("슬랙 웹훅을 설정하시겠어요?")) {
+    const value = prompt("사용할 웹훅 URL을 입력해주세요.");
+    if (value) {
+      setWebhookUrl(value);
+      fetchJson(
+        value,
+        { method: "post" },
+        {
+          text:
+            "코레일 예매를 시작합니다. \n" +
+            "준비가 완료되면 이 채널로 알려드릴게요 :+1:",
+        }
+      );
+    }
   }
 
   if (!isLogin()) {

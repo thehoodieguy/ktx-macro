@@ -65,7 +65,15 @@ const setEscapeEvent = () => {
   });
 };
 
+const setWebhookUrl = (value) => localStorage.setItem('KTX_MACRO::slackWebHookUrl', value);
+
+
 const macroStart = () => {
+  if (confirm('슬랙 웹훅을 설정하시겠어요?')) {
+    const value = prompt('사용할 웹훅 URL을 입력해주세요.');
+    if (value) setWebhookUrl(value);
+  }
+
   if (!isLogin()) {
     if (confirm("로그인이 필요합니다.\n로그인 페이지로 이동하시겠습니까?")) {
       location.href = LOGIN_PAGE_URI;
